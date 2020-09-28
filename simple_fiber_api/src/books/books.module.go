@@ -21,16 +21,16 @@ type HttpResponseOnGet struct {
 	Book []Book `json:"book"`
 }
 
-func createBook(ctx *fiber.Ctx, books []Book) error {
+func createBook(ctx *fiber.Ctx, books *[]Book) error {
 
 	response := HttpResponseOnPOST{StatusCode: http.StatusCreated, Message: "created"}
 
-	// append(books, Book{Id: 2, Author: "fulanso", Title: "Livroa"})
+	// books = append(books, Book{id: 2, Title: "Atitle", Author: "Alguem"})
 
 	return ctx.Status(http.StatusCreated).JSON(response)
 }
 
-func getAllBooks(ctx *fiber.Ctx, books []Book) error {
+func getAllBooks(ctx *fiber.Ctx, books *[]Book) error {
 	return ctx.JSON(books)
 }
 
@@ -52,7 +52,8 @@ func deleteBook(ctx *fiber.Ctx) error {
 	return ctx.JSON(response)
 }
 
-func BooksModule(server *fiber.App, books []Book) {
+func BooksModule(server *fiber.App, books *[]Book) {
+
 	server.Post("/books", func(ctx *fiber.Ctx) error {
 		return createBook(ctx, books)
 	})
@@ -61,7 +62,7 @@ func BooksModule(server *fiber.App, books []Book) {
 		return getAllBooks(ctx, books)
 	})
 
-	server.Get("/books/:id", getBook)
-	server.Put("/books/:id", updateBook)
-	server.Delete("/books/:id", deleteBook)
+	// server.Get("/books/:id", getBook)
+	// server.Put("/books/:id", updateBook)
+	// server.Delete("/books/:id", deleteBook)
 }

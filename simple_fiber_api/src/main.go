@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	server := fiber.New()
+	server := *fiber.New()
 
 	booksInMemory := []books.Book{
-		books.Book{Id: 1, Author: "fulano", Title: "Livro"},
+		books.Book{Id: 1, Title: "title", Author: "Fulano"},
 	}
 
-	books.BooksModule(server, booksInMemory)
+	books.BooksModule(&server, &booksInMemory)
 
 	server.Listen(":4000")
 }
