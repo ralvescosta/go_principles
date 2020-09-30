@@ -20,7 +20,7 @@ func (u *usecase) Search(userName string) bussiness.GithubUserEntity {
 	return user
 }
 
-func Constructor(repository infrastructure.IHttpGithubApiRepository) ISearchGithubUserUsecase {
+func Constructor(repository *infrastructure.IHttpGithubApiRepository) ISearchGithubUserUsecase {
 
-	return &usecase{repository: repository}
+	return &usecase{repository: *repository}
 }

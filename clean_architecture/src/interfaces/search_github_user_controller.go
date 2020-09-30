@@ -17,12 +17,12 @@ func (c *controller) Handle(userName string) string {
 
 	user := c.usecase.Search(userName)
 
-	fmt.Println(user)
+	fmt.Println("controller", user)
 
 	return "hello from controller"
 }
 
-func Constructor(usecase application.ISearchGithubUserUsecase) IController {
+func Constructor(usecase *application.ISearchGithubUserUsecase) IController {
 
-	return &controller{usecase: usecase}
+	return &controller{usecase: *usecase}
 }
