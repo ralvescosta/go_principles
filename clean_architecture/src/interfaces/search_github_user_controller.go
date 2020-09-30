@@ -5,23 +5,24 @@ import (
 	"fmt"
 )
 
-type controller struct{}
+type controller struct {
+	usecase application.ISearchGithubUserUsecase
+}
 
 type IController interface {
-	Constructor(usecase application.ISearchGithubUserUsecase) func(userName string) string
+	Handle(userName string) string
 }
 
-func (*controller) Constructor(usecase application.ISearchGithubUserUsecase) func(userName string) string {
-	return func(userName string) string {
-		fmt.Println("hello from controller")
+func (c *controller) Handle(userName string) string {
 
-		usecase.Search(userName)
+	user := c.usecase.Search(userName)
 
-		return "hello from controller"
-	}
+	fmt.Println(user)
+
+	return "hello from controller"
 }
 
-func NewController() IController {
+func Constructor(usecase application.ISearchGithubUserUsecase) IController {
 
-	return &controller{}
+	return &controller{usecase: usecase}
 }

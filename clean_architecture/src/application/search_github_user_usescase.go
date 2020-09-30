@@ -1,19 +1,26 @@
 package application
 
-import "fmt"
-
-type usecase struct{}
+import (
+	"clean/src/bussiness"
+	"clean/src/infrastructure"
+)
 
 type ISearchGithubUserUsecase interface {
-	Search(userName string) string
+	Search(userName string) bussiness.GithubUserEntity
 }
 
-func (*usecase) Search(userName string) string {
-	fmt.Println("Hello from Usecase")
-	return "Hello from Usecase"
-
+type usecase struct {
+	repository infrastructure.IHttpGithubApiRepository
 }
 
-func NewUsecase() ISearchGithubUserUsecase {
-	return &usecase{}
+func (u *usecase) Search(userName string) bussiness.GithubUserEntity {
+
+	user := u.repository.GithubApi(userName)
+
+	return user
+}
+
+func Constructor(repository infrastructure.IHttpGithubApiRepository) ISearchGithubUserUsecase {
+
+	return &usecase{repository: repository}
 }

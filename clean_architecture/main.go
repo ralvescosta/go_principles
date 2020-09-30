@@ -2,16 +2,17 @@ package main
 
 import (
 	"clean/src/application"
+	"clean/src/infrastructure"
 	"clean/src/interfaces"
 )
 
 var (
-	implUsecase    application.ISearchGithubUserUsecase = application.NewUsecase()
-	implController interfaces.IController               = interfaces.NewController()
+	implRepository infrastructure.IHttpGithubApiRepository = infrastructure.Constructor()
+	implUsecase    application.ISearchGithubUserUsecase    = application.Constructor(implRepository)
+	implController interfaces.IController                  = interfaces.Constructor(implUsecase)
 )
 
 func main() {
 
-	controller := implController.Constructor(implUsecase)
-	controller("jaoao")
+	implController.Handle("jaoao")
 }
