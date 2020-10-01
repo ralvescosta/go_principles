@@ -1,7 +1,7 @@
-package framework
+package core
 
 import (
-	migrations "gomux_gorm/src/framework/database/migrations"
+	migrations "gomux_gorm/src/core/database/table_models"
 	"log"
 
 	"github.com/jinzhu/gorm"

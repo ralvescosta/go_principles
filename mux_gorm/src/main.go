@@ -1,8 +1,8 @@
 package main
 
 import (
-	database "gomux_gorm/src/framework/database"
-	"gomux_gorm/src/repositories"
+	database "gomux_gorm/src/core/database"
+	repositories "gomux_gorm/src/signin_module/framework/repositories"
 )
 
 func main() {
