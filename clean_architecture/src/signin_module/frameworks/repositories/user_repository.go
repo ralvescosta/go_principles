@@ -14,15 +14,17 @@ type userRepository struct {
 
 type IUserRepository interface {
 	Create(registerUser *entities.RegisterUsersEntity)
-	FindOne(id int) *migrations.Users
-	FindAll() *[]migrations.Users
-	Update(id int) *migrations.Users
-	Delete(id int) *migrations.Users
+	FindByEmail(email string) *migrations.Users
 }
 
 func (r *userRepository) Create(registerUser *entities.RegisterUsersEntity) {
 
-	result := r.db.Create(registerUser)
+	result := r.db.Create(&migrations.Users{
+		Name:     registerUser.Name,
+		LastName: registerUser.LastName,
+		Email:    registerUser.Email,
+		Password: registerUser.Password,
+	})
 
 	fmt.Println(result)
 }
@@ -30,8 +32,15 @@ func (r *userRepository) Create(registerUser *entities.RegisterUsersEntity) {
 func (r *userRepository) FindOne(id int) *migrations.Users {
 	user := migrations.Users{}
 
-	result := r.db.First(&user, id)
-	fmt.Println(result)
+	r.db.First(&user, id)
+
+	return &user
+}
+
+func (r *userRepository) FindByEmail(email string) *migrations.Users {
+	user := migrations.Users{}
+
+	r.db.First(&user, "email =?", email)
 
 	return &user
 }
@@ -40,8 +49,7 @@ func (r *userRepository) FindAll() *[]migrations.Users {
 
 	user := []migrations.Users{migrations.Users{}}
 
-	result := r.db.Find(&user)
-	fmt.Println(result)
+	r.db.Find(&user)
 
 	return &user
 }

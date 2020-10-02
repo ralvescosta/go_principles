@@ -23,11 +23,17 @@ func (c *controller) Handle(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(`{"error": "Error unmarshaling array"}`))
+		res.Write([]byte(`{"message": "Internal Server Error"}`))
 		return
 	}
 
-	result := (*c.usecase).SigninUsecase(&body)
+	result, err := (*c.usecase).SigninUsecase(&body)
+
+	if err != nil {
+		res.WriteHeader(http.StatusInternalServerError)
+		res.Write([]byte(`{"message": "User Already Exist"}`))
+		return
+	}
 
 	res.WriteHeader(http.StatusCreated)
 	json.NewEncoder(res).Encode(result)

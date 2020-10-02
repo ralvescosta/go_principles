@@ -27,6 +27,8 @@ func (m *module) StartHttpServer() {
 	const PORT string = ":4000"
 
 	conn := core.ConnectToDatabase()
+	defer conn.Close()
+
 	m.conn = conn
 
 	router := mux.NewRouter()

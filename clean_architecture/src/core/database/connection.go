@@ -14,7 +14,6 @@ func ConnectToDatabase() *gorm.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer connection.Close()
 
 	connection.AutoMigrate(&migrations.Users{}, &migrations.Permissions{}, &migrations.UserPermissions{}, &migrations.Sessions{})
 
