@@ -1,24 +1,24 @@
-package signin_interfaces
+package session_interfaces
 
 import (
 	"encoding/json"
-	usecases "gomux_gorm/src/signin_module/application/usecases"
-	bussiness "gomux_gorm/src/signin_module/bussiness/entities"
+	usecases "gomux_gorm/src/session_module/application/usecases"
+	bussiness "gomux_gorm/src/session_module/bussiness/entities"
 
 	"net/http"
 )
 
-type ISigninController interface {
+type ISessionController interface {
 	Handle(res http.ResponseWriter, req *http.Request)
 }
 
 type controller struct {
-	usecase *usecases.ISigninUsecase
+	usecase *usecases.ISessionUsecase
 }
 
 func (c *controller) Handle(res http.ResponseWriter, req *http.Request) {
 
-	var body bussiness.RegisterUsersEntity
+	var body bussiness.UsersInput
 	err := json.NewDecoder(req.Body).Decode(&body)
 
 	if err != nil {
@@ -27,25 +27,24 @@ func (c *controller) Handle(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if body.Name == "" || body.LastName == "" || body.Email == "" || body.Password == "" {
+	if body.Email == "" || body.Password == "" {
 		res.WriteHeader(http.StatusUnsupportedMediaType)
 		res.Write([]byte(`{"message": "Body wrong format"}`))
 		return
 	}
 
-	err = (*c.usecase).SigninUsecase(&body)
+	user, err := (*c.usecase).SessionUsecase(&body)
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(`{"message": "User Already Exist"}`))
+		res.Write([]byte(`{"message": "User Credentials are wrong"}`))
 		return
 	}
 
 	res.WriteHeader(http.StatusCreated)
-	// json.NewEncoder(res).Encode("{}")
-	res.Write([]byte(`{}`))
+	json.NewEncoder(res).Encode(user)
 }
 
-func SigninController(usecase *usecases.ISigninUsecase) ISigninController {
+func SessionController(usecase *usecases.ISessionUsecase) ISessionController {
 	return &controller{usecase}
 }

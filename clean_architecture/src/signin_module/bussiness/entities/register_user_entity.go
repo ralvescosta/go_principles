@@ -1,4 +1,4 @@
-package signin_bussiness
+package signin_bussiness_entities
 
 type RegisterUsersEntity struct {
 	Name     string `json:"name"`

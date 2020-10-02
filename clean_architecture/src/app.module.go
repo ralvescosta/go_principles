@@ -5,9 +5,10 @@ import (
 	"log"
 
 	core "gomux_gorm/src/core/database"
-	usecases "gomux_gorm/src/signin_module/application/usecases"
-	repositories "gomux_gorm/src/signin_module/frameworks/repositories"
-	controllers "gomux_gorm/src/signin_module/interfaces"
+	signinUsecases "gomux_gorm/src/signin_module/application/usecases"
+	signinCrypto "gomux_gorm/src/signin_module/frameworks/crypto"
+	signinRepositories "gomux_gorm/src/signin_module/frameworks/repositories"
+	signinControllers "gomux_gorm/src/signin_module/interfaces"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -46,10 +47,11 @@ func (m *module) registerRouters(router *mux.Router) {
 		fmt.Fprint(res, "{\"status\": \"ok\"}")
 	})
 
-	repository := repositories.UserRepositoryConstructor(m.conn)
-	signinUsecase := usecases.SigninUsecaseConstructor(&repository)
-	controller := controllers.SigninController(&signinUsecase)
-	router.HandleFunc("/signin", controller.Handle).Methods("POST")
+	_signinCrypto := signinCrypto.HashConstructor()
+	_signinRepository := signinRepositories.UserRepositoryConstructor(m.conn)
+	_signinUsecase := signinUsecases.SigninUsecaseConstructor(&_signinRepository, &_signinCrypto)
+	_signinController := signinControllers.SigninController(&_signinUsecase)
+	router.HandleFunc("/signin", _signinController.Handle).Methods("POST")
 
 }
 

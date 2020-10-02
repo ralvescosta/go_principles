@@ -1,34 +1,41 @@
-package signin_application
+package signin_application_usecases
 
 import (
 	"errors"
-	"fmt"
 	bussiness "gomux_gorm/src/signin_module/bussiness/entities"
+	crypto "gomux_gorm/src/signin_module/frameworks/crypto"
 	repositories "gomux_gorm/src/signin_module/frameworks/repositories"
 )
 
 type usecase struct {
 	repository *repositories.IUserRepository
+	crypto     *crypto.IHasher
 }
 
 type ISigninUsecase interface {
-	SigninUsecase(user *bussiness.RegisterUsersEntity) (*bussiness.RegisterUsersEntity, error)
+	SigninUsecase(user *bussiness.RegisterUsersEntity) error
 }
 
-func (u *usecase) SigninUsecase(user *bussiness.RegisterUsersEntity) (*bussiness.RegisterUsersEntity, error) {
-	fmt.Println("SigninUsecase")
+func (u *usecase) SigninUsecase(user *bussiness.RegisterUsersEntity) error {
 
 	userAlreadyRegistered := (*u.repository).FindByEmail(user.Email)
 
 	if userAlreadyRegistered.ID != 0 {
-		return nil, errors.New("user already exist")
+		return errors.New("user already exist")
 	}
+
+	hashPassword, err := (*u.crypto).HashPassword(user.Password)
+
+	if err != nil {
+		return errors.New("Something Wrong in Hash password")
+	}
+	user.Password = hashPassword
 
 	(*u.repository).Create(user)
 
-	return user, nil
+	return nil
 }
 
-func SigninUsecaseConstructor(repository *repositories.IUserRepository) ISigninUsecase {
-	return &usecase{repository}
+func SigninUsecaseConstructor(repository *repositories.IUserRepository, crypto *crypto.IHasher) ISigninUsecase {
+	return &usecase{repository, crypto}
 }

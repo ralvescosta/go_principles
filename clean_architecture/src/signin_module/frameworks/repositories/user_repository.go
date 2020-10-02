@@ -1,7 +1,6 @@
-package signin_repositories
+package signin_frameworks_repositories
 
 import (
-	"fmt"
 	migrations "gomux_gorm/src/core/database/table_models"
 	entities "gomux_gorm/src/signin_module/bussiness/entities"
 
@@ -19,14 +18,12 @@ type IUserRepository interface {
 
 func (r *userRepository) Create(registerUser *entities.RegisterUsersEntity) {
 
-	result := r.db.Create(&migrations.Users{
+	r.db.Create(&migrations.Users{
 		Name:     registerUser.Name,
 		LastName: registerUser.LastName,
 		Email:    registerUser.Email,
 		Password: registerUser.Password,
 	})
-
-	fmt.Println(result)
 }
 
 func (r *userRepository) FindOne(id int) *migrations.Users {
