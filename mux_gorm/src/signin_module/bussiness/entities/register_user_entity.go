@@ -1,8 +1,8 @@
 package signin_bussiness
 
 type RegisterUsersEntity struct {
-	Name     string
-	LastName string
-	Email    string
-	Password string
+	Name     string `json:"name"`
+	LastName string `json:"lastName"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
