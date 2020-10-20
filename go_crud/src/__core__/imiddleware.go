@@ -1,4 +1,4 @@
-package interfaces
+package core
 
 import "net/http"
 

@@ -1,6 +1,10 @@
 package interfaces
 
-import "net/http"
+import (
+	"net/http"
+
+	core "crud/src/__core__"
+)
 
 type middleware struct{}
 
@@ -27,6 +31,6 @@ func (*middleware) Handle(next http.Handler) http.Handler {
 }
 
 // HeadersMiddleware ...
-func HeadersMiddleware() IMiddleware {
+func HeadersMiddleware() core.IMiddleware {
 	return &middleware{}
 }
