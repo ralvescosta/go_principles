@@ -1,13 +1,24 @@
 package books
 
 import (
+	errors "crud/src/__core__/errors"
 	entities "crud/src/business/entities"
+	repositories "crud/src/frameworks/repositories"
 )
 
-type usecase struct{}
+type usecase struct {
+	repository repositories.IBooksRepository
+}
 
-func (*usecase) RegisterABook(book *entities.InputCreateBook) (*entities.BookEntity, error) {
-	return nil, nil
+func (u *usecase) RegisterABook(book *entities.InputCreateBook) (*entities.BookEntity, error) {
+
+	result, err := u.repository.Create(book)
+
+	if err != nil {
+		return nil, &errors.InternalServerError{}
+	}
+
+	return result, nil
 }
 
 func (*usecase) FindABook(id uint64) (*entities.BookEntity, error) {
@@ -27,6 +38,6 @@ func (*usecase) DeleteABook(id uint64) (*entities.BookEntity, error) {
 }
 
 // Books ...
-func Books() IBooks {
-	return &usecase{}
+func Books(repository repositories.IBooksRepository) IBooks {
+	return &usecase{repository: repository}
 }

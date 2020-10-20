@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"database/sql"
-	"fmt"
 
 	entities "crud/src/business/entities"
 )
@@ -13,21 +12,34 @@ type booksRepository struct {
 
 // Create ...
 func (b *booksRepository) Create(book *entities.InputCreateBook) (*entities.BookEntity, error) {
-	sql := `INSERT INTO "books" (title, author, publishing_company, edition) VALUES ($1, $2, $3, $4) RETURNING`
+	sql := `INSERT INTO books (title, author, publishing_company, edition) VALUES ($1, $2, $3, $4) RETURNING *`
 
 	prepare, err := (*b.db).Prepare(sql)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := prepare.Exec(book.Title, book.Author, book.PublishingCompany, book.Edition)
+	entity := &entities.BookEntity{}
+	err = prepare.QueryRow(
+		book.Title,
+		book.Author,
+		book.PublishingCompany,
+		book.Edition,
+	).Scan(
+		&entity.ID,
+		&entity.Title,
+		&entity.Author,
+		&entity.PublishingCompany,
+		&entity.Edition,
+		&entity.CreatedAt,
+		&entity.UpdatedAt,
+		&entity.DeletedAt,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(result)
-
-	return nil, nil
+	return entity, nil
 }
 
 // FindByID ...
@@ -51,6 +63,6 @@ func (b *booksRepository) Delete(id uint64) (*entities.BookEntity, error) {
 }
 
 // BooksRepository ...
-func BooksRepository() IBooksRepository {
-	return &booksRepository{}
+func BooksRepository(db *sql.DB) IBooksRepository {
+	return &booksRepository{db: db}
 }

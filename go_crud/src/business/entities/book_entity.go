@@ -1,6 +1,9 @@
 package entities
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 // BookEntity ...
 type BookEntity struct {
@@ -11,4 +14,5 @@ type BookEntity struct {
 	Edition           uint64
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+	DeletedAt         sql.NullTime
 }
