@@ -1,3 +1,8 @@
 package main
 
-func main() {}
+func main() {
+
+	server := Server{}
+
+	server.StartHTPServer()
+}

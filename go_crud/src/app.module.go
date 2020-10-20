@@ -19,13 +19,14 @@ const (
 	HTTP_HOST = "127.0.0.1"
 )
 
-type server struct {
+// Server ...
+type Server struct {
 	dbConn *sql.DB
 	router *mux.Router
 }
 
 //StartHTPServer  ...
-func (s *server) StartHTPServer() {
+func (s *Server) StartHTPServer() {
 	_dbConnection := database.DbConnection()
 	dbConn, err := _dbConnection.Connect()
 	if err != nil {
@@ -33,8 +34,10 @@ func (s *server) StartHTPServer() {
 	}
 	defer dbConn.Close()
 
+	_hMiddleware := interfaces.HeadersMiddleware()
+
 	router := mux.NewRouter()
-	router.Use(interfaces.HeadersMiddleware)
+	router.Use(_hMiddleware.Handle)
 
 	s.dbConn = dbConn
 	s.router = router
@@ -52,4 +55,4 @@ func (s *server) StartHTPServer() {
 	log.Fatalln(server.ListenAndServe())
 }
 
-func (*server) registerRouters() {}
+func (*Server) registerRouters() {}
