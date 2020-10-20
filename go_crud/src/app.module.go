@@ -11,7 +11,11 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
-	interfaces "crud/src/interfaces/middleware"
+	usecases "crud/src/applications/books"
+	entities "crud/src/business/entities"
+	adapters "crud/src/frameworks/adapters"
+	controllers "crud/src/interfaces/controllers"
+	middleware "crud/src/interfaces/middleware"
 )
 
 const (
@@ -34,7 +38,7 @@ func (s *Server) StartHTPServer() {
 	}
 	defer dbConn.Close()
 
-	_hMiddleware := interfaces.HeadersMiddleware()
+	_hMiddleware := middleware.HeadersMiddleware()
 
 	router := mux.NewRouter()
 	router.Use(_hMiddleware.Handle)
@@ -55,4 +59,9 @@ func (s *Server) StartHTPServer() {
 	log.Fatalln(server.ListenAndServe())
 }
 
-func (*Server) registerRouters() {}
+func (s *Server) registerRouters() {
+
+	_crudBookUsecase := usecases.Books()
+	_createABookController := controllers.CreateABookController(_crudBookUsecase)
+	s.router.HandleFunc("/books", adapters.RouteAdapt(_createABookController, &entities.InputCreateBook{})).Methods("POST")
+}

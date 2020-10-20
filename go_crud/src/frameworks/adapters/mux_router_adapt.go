@@ -18,6 +18,8 @@ func RouteAdapt(controller core.IController, body interface{}) func(res http.Res
 		result := controller.Handle(body)
 
 		res.WriteHeader(result.StatusCode)
-		json.NewEncoder(res).Encode(result.Body)
+		if result.Body != nil {
+			json.NewEncoder(res).Encode(result.Body)
+		}
 	}
 }

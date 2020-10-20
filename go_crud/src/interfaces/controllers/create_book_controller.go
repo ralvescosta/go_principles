@@ -1,0 +1,36 @@
+package controllers
+
+import (
+	"net/http"
+
+	core "crud/src/__core__"
+	applications "crud/src/applications/books"
+	entities "crud/src/business/entities"
+)
+
+// Controller ...
+type controller struct {
+	usecase applications.IBooks
+}
+
+// Handle ...
+func (c *controller) Handle(body interface{}) *core.HTTPResponse {
+	castBody := body.(*entities.InputCreateBook)
+
+	_, err := c.usecase.RegisterABook(castBody)
+
+	if err != nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusInternalServerError,
+		}
+	}
+
+	return &core.HTTPResponse{
+		StatusCode: http.StatusCreated,
+	}
+}
+
+// CreateABookController ...
+func CreateABookController(usecase applications.IBooks) core.IController {
+	return &controller{usecase: usecase}
+}

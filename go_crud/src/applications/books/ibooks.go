@@ -6,9 +6,9 @@ import (
 
 // IBooks ...
 type IBooks interface {
-	RegisterABook(book *entities.InputCreateBook)
-	FindABook(id uint64)
-	GetAllBooks()
-	UpdateABook(book *entities.BookEntity)
-	DeleteABook(id uint64)
+	RegisterABook(book *entities.InputCreateBook) (*entities.BookEntity, error)
+	FindABook(id uint64) (*entities.BookEntity, error)
+	GetAllBooks() (*[]entities.BookEntity, error)
+	UpdateABook(book *entities.BookEntity) (*entities.BookEntity, error)
+	DeleteABook(id uint64) (*entities.BookEntity, error)
 }
