@@ -9,12 +9,12 @@ import (
 )
 
 // Controller ...
-type controller struct {
+type createBookController struct {
 	usecase applications.IBooks
 }
 
 // Handle ...
-func (c *controller) Handle(body interface{}) *core.HTTPResponse {
+func (c *createBookController) Handle(body interface{}) *core.HTTPResponse {
 	castBody := body.(*entities.InputCreateBook)
 
 	_, err := c.usecase.RegisterABook(castBody)
@@ -32,5 +32,5 @@ func (c *controller) Handle(body interface{}) *core.HTTPResponse {
 
 // CreateABookController ...
 func CreateABookController(usecase applications.IBooks) core.IController {
-	return &controller{usecase: usecase}
+	return &createBookController{usecase: usecase}
 }

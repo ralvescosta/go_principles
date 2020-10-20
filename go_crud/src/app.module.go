@@ -73,6 +73,19 @@ func (s *Server) registerRouters() {
 
 	_crudBooksRepository := repositories.BooksRepository(s.dbConn)
 	_crudBookUsecase := usecases.Books(_crudBooksRepository)
+
 	_createABookController := controllers.CreateABookController(_crudBookUsecase)
 	s.router.HandleFunc("/books", adapters.RouteAdapt(_createABookController, &entities.InputCreateBook{})).Methods("POST")
+
+	_indexBookController := controllers.IndexBookController(_crudBookUsecase)
+	s.router.HandleFunc("/books/:id", adapters.RouteAdapt(_indexBookController, &entities.InputCreateBook{})).Methods("GET")
+
+	_showBookController := controllers.ShowBookController(_crudBookUsecase)
+	s.router.HandleFunc("/books", adapters.RouteAdapt(_showBookController, &entities.InputCreateBook{})).Methods("GET")
+
+	_updateBookController := controllers.UpdateBookController(_crudBookUsecase)
+	s.router.HandleFunc("/books", adapters.RouteAdapt(_updateBookController, &entities.InputCreateBook{})).Methods("PUT")
+
+	_deleteBookController := controllers.DeleteABookController(_crudBookUsecase)
+	s.router.HandleFunc("/books", adapters.RouteAdapt(_deleteBookController, &entities.InputCreateBook{})).Methods("DELETE")
 }
