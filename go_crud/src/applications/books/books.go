@@ -13,7 +13,6 @@ type usecase struct {
 func (u *usecase) RegisterABook(book *entities.InputCreateBook) (*entities.BookEntity, error) {
 
 	result, err := u.repository.Create(book)
-
 	if err != nil {
 		return nil, &errors.InternalServerError{}
 	}
@@ -21,20 +20,44 @@ func (u *usecase) RegisterABook(book *entities.InputCreateBook) (*entities.BookE
 	return result, nil
 }
 
-func (*usecase) FindABook(id uint64) (*entities.BookEntity, error) {
-	return nil, nil
+func (u *usecase) FindABook(id uint64) (*entities.BookEntity, error) {
+
+	result, err := u.repository.FindByID(id)
+	if err != nil {
+		return nil, &errors.InternalServerError{}
+	}
+
+	return result, nil
 }
 
-func (*usecase) GetAllBooks() (*[]entities.BookEntity, error) {
-	return nil, nil
+func (u *usecase) GetAllBooks() (*[]entities.BookEntity, error) {
+
+	result, err := u.repository.FindAll()
+	if err != nil {
+		return nil, &errors.InternalServerError{}
+	}
+
+	return result, nil
 }
 
-func (*usecase) UpdateABook(book *entities.BookEntity) (*entities.BookEntity, error) {
-	return nil, nil
+func (u *usecase) UpdateABook(book *entities.BookEntity) (*entities.BookEntity, error) {
+
+	result, err := u.repository.Update(book)
+	if err != nil {
+		return nil, &errors.InternalServerError{}
+	}
+
+	return result, nil
 }
 
-func (*usecase) DeleteABook(id uint64) (*entities.BookEntity, error) {
-	return nil, nil
+func (u *usecase) DeleteABook(id uint64) (*entities.BookEntity, error) {
+
+	result, err := u.repository.Delete(id)
+	if err != nil {
+		return nil, &errors.InternalServerError{}
+	}
+
+	return result, nil
 }
 
 // Books ...
