@@ -7,12 +7,12 @@ import (
 
 // BookEntity ...
 type BookEntity struct {
-	ID                uint64
-	Title             string
-	Author            string
-	PublishingCompany string
-	Edition           uint64
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
-	DeletedAt         sql.NullTime
+	ID                uint64       `json:"id"`
+	Title             string       `json:"title"`
+	Author            string       `json:"author"`
+	PublishingCompany string       `json:"publishingCompany"`
+	Edition           uint64       `json:"edition"`
+	CreatedAt         time.Time    `json:"createdAt"`
+	UpdatedAt         time.Time    `json:"updatedAt"`
+	DeletedAt         sql.NullTime `json:"deletedAt"`
 }
