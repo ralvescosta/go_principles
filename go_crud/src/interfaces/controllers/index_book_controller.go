@@ -1,11 +1,10 @@
 package controllers
 
 import (
-	"net/http"
-	"strconv"
-
 	core "crud/src/__core__"
 	applications "crud/src/applications/books"
+	"net/http"
+	"strconv"
 )
 
 // Controller ...
@@ -23,9 +22,16 @@ func (c *indexBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPRe
 	}
 
 	result, err := c.usecase.FindABook(id)
+
 	if err != nil {
 		return &core.HTTPResponse{
 			StatusCode: http.StatusInternalServerError,
+		}
+	}
+
+	if result == nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusNotFound,
 		}
 	}
 

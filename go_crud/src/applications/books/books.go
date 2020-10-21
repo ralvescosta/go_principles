@@ -23,6 +23,10 @@ func (u *usecase) RegisterABook(book *entities.InputCreateBook) (*entities.BookE
 func (u *usecase) FindABook(id uint64) (*entities.BookEntity, error) {
 
 	result, err := u.repository.FindByID(id)
+
+	if err != nil && err.Error() == "sql: no rows in result set" {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, &errors.InternalServerError{}
 	}
@@ -33,6 +37,10 @@ func (u *usecase) FindABook(id uint64) (*entities.BookEntity, error) {
 func (u *usecase) GetAllBooks() (*[]entities.BookEntity, error) {
 
 	result, err := u.repository.FindAll()
+
+	if err != nil && err.Error() == "sql: no rows in result set" {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, &errors.InternalServerError{}
 	}
@@ -40,9 +48,9 @@ func (u *usecase) GetAllBooks() (*[]entities.BookEntity, error) {
 	return result, nil
 }
 
-func (u *usecase) UpdateABook(book *entities.BookEntity) (*entities.BookEntity, error) {
+func (u *usecase) UpdateABook(id uint64, book *entities.InputCreateBook) (*entities.BookEntity, error) {
 
-	result, err := u.repository.Update(book)
+	result, err := u.repository.Update(id, book)
 	if err != nil {
 		return nil, &errors.InternalServerError{}
 	}

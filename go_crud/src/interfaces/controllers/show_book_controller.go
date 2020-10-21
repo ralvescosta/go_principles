@@ -14,10 +14,17 @@ type showBookController struct {
 
 // Handle ...
 func (c *showBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+
 	result, err := c.usecase.GetAllBooks()
 	if err != nil {
 		return &core.HTTPResponse{
 			StatusCode: http.StatusInternalServerError,
+		}
+	}
+
+	if result == nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusNotFound,
 		}
 	}
 

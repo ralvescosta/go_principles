@@ -1,10 +1,9 @@
 package repositories
 
 import (
+	entities "crud/src/business/entities"
 	"database/sql"
 	"fmt"
-
-	entities "crud/src/business/entities"
 )
 
 type booksRepository struct {
@@ -49,11 +48,8 @@ func (b *booksRepository) FindByID(id uint64) (*entities.BookEntity, error) {
 
 	prepare, err := (*b.db).Prepare(sql)
 	if err != nil {
-		fmt.Println(err)
-
 		return nil, err
 	}
-
 	entity := &entities.BookEntity{}
 	err = prepare.QueryRow(id).Scan(
 		&entity.ID,
@@ -65,6 +61,7 @@ func (b *booksRepository) FindByID(id uint64) (*entities.BookEntity, error) {
 		&entity.UpdatedAt,
 		&entity.DeletedAt,
 	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -107,12 +104,76 @@ func (b *booksRepository) FindAll() (*[]entities.BookEntity, error) {
 }
 
 // Update ...
-func (b *booksRepository) Update(*entities.BookEntity) (*entities.BookEntity, error) {
-	return nil, nil
+func (b *booksRepository) Update(id uint64, book *entities.InputCreateBook) (*entities.BookEntity, error) {
+	var set string
+
+	if book.Author != "" {
+		set += "author = " + book.Author
+	}
+	if book.Edition != 0 {
+		set += fmt.Sprintf(", edition = %d", book.Edition)
+	}
+	if book.PublishingCompany != "" {
+		set += ", publishing_company = " + book.PublishingCompany
+	}
+	if book.Title != "" {
+		set += ", title = " + book.Title
+	}
+
+	sql := "UPDATE books SET" + set + "WHERE id = $1 RETURNING *"
+
+	prepare, err := (*b.db).Prepare(sql)
+	if err != nil {
+		return nil, err
+	}
+
+	entity := &entities.BookEntity{}
+	err = prepare.QueryRow(id).Scan(
+		&entity.ID,
+		&entity.Title,
+		&entity.Author,
+		&entity.PublishingCompany,
+		&entity.Edition,
+		&entity.CreatedAt,
+		&entity.UpdatedAt,
+		&entity.DeletedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return entity, nil
 }
 
 // Delete ...
 func (b *booksRepository) Delete(id uint64) (*entities.BookEntity, error) {
+	sql := `DELETE FROM books WHERE id = $1 RETURNING *`
+
+	prepare, err := (*b.db).Prepare(sql)
+	if err != nil {
+		return nil, err
+	}
+
+	entity := &entities.BookEntity{}
+	err = prepare.QueryRow(id).Scan(
+		&entity.ID,
+		&entity.Title,
+		&entity.Author,
+		&entity.PublishingCompany,
+		&entity.Edition,
+		&entity.CreatedAt,
+		&entity.UpdatedAt,
+		&entity.DeletedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
+}
+
+// Delete ...
+func (b *booksRepository) SoftDelete(id uint64) (*entities.BookEntity, error) {
+
 	return nil, nil
 }
 

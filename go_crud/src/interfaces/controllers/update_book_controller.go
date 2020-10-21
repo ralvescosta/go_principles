@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
+	"strconv"
 
 	core "crud/src/__core__"
 	applications "crud/src/applications/books"
@@ -16,16 +16,28 @@ type updateBookController struct {
 
 // Handle ...
 func (c *updateBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+	id, err := strconv.ParseUint(httpRequest.Params["id"], 10, 64)
+	if err != nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusInternalServerError,
+		}
+	}
 	castBody := httpRequest.Body.(*entities.InputCreateBook)
 
-	fmt.Println(castBody)
+	result, err := c.usecase.UpdateABook(id, castBody)
+	if err != nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusInternalServerError,
+		}
+	}
 
 	return &core.HTTPResponse{
 		StatusCode: http.StatusCreated,
+		Body:       result,
 	}
 }
 
 // UpdateBookController ...
 func UpdateBookController(usecase applications.IBooks) core.IController {
-	return &showBookController{usecase: usecase}
+	return &updateBookController{usecase: usecase}
 }
