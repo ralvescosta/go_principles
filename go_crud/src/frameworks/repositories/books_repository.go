@@ -108,22 +108,24 @@ func (b *booksRepository) Update(id uint64, book *entities.InputCreateBook) (*en
 	var set string
 
 	if book.Author != "" {
-		set += "author = " + book.Author
+		set += fmt.Sprintf("author = '%s', ", book.Author)
 	}
 	if book.Edition != 0 {
-		set += fmt.Sprintf(", edition = %d", book.Edition)
+		set += fmt.Sprintf("edition = %d, ", book.Edition)
 	}
 	if book.PublishingCompany != "" {
-		set += ", publishing_company = " + book.PublishingCompany
+		set += fmt.Sprintf("publishing_company = '%s', ", book.PublishingCompany)
 	}
 	if book.Title != "" {
-		set += ", title = " + book.Title
+		set += fmt.Sprintf("title = '%s', ", book.Title)
 	}
 
-	sql := "UPDATE books SET" + set + "WHERE id = $1 RETURNING *"
+	set = set[:len(set)-2]
+	sql := "UPDATE books SET " + set + " WHERE id = $1 RETURNING *"
 
 	prepare, err := (*b.db).Prepare(sql)
 	if err != nil {
+		fmt.Println(sql, err)
 		return nil, err
 	}
 
