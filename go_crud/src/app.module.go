@@ -78,14 +78,14 @@ func (s *Server) registerRouters() {
 	s.router.HandleFunc("/books", adapters.RouteAdapt(_createABookController, &entities.InputCreateBook{})).Methods("POST")
 
 	_indexBookController := controllers.IndexBookController(_crudBookUsecase)
-	s.router.HandleFunc("/books/:id", adapters.RouteAdapt(_indexBookController, &entities.InputCreateBook{})).Methods("GET")
+	s.router.HandleFunc("/books/{id}", adapters.RouteAdapt(_indexBookController, nil)).Methods("GET")
 
 	_showBookController := controllers.ShowBookController(_crudBookUsecase)
-	s.router.HandleFunc("/books", adapters.RouteAdapt(_showBookController, &entities.InputCreateBook{})).Methods("GET")
+	s.router.HandleFunc("/books", adapters.RouteAdapt(_showBookController, nil)).Methods("GET")
 
 	_updateBookController := controllers.UpdateBookController(_crudBookUsecase)
 	s.router.HandleFunc("/books", adapters.RouteAdapt(_updateBookController, &entities.InputCreateBook{})).Methods("PUT")
 
 	_deleteBookController := controllers.DeleteABookController(_crudBookUsecase)
-	s.router.HandleFunc("/books", adapters.RouteAdapt(_deleteBookController, &entities.InputCreateBook{})).Methods("DELETE")
+	s.router.HandleFunc("/books/{id}", adapters.RouteAdapt(_deleteBookController, &entities.InputCreateBook{})).Methods("DELETE")
 }

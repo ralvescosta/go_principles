@@ -1,5 +1,11 @@
 package core
 
+// HTTPRequest ....
+type HTTPRequest struct {
+	Body   interface{}
+	Params map[string]string
+}
+
 // HTTPResponse ....
 type HTTPResponse struct {
 	StatusCode int
@@ -9,5 +15,5 @@ type HTTPResponse struct {
 
 // IController ...
 type IController interface {
-	Handle(body interface{}) *HTTPResponse
+	Handle(httpRequest *HTTPRequest) *HTTPResponse
 }

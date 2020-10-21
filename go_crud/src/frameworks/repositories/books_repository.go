@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"fmt"
 
 	entities "crud/src/business/entities"
 )
@@ -44,12 +45,65 @@ func (b *booksRepository) Create(book *entities.InputCreateBook) (*entities.Book
 
 // FindByID ...
 func (b *booksRepository) FindByID(id uint64) (*entities.BookEntity, error) {
-	return nil, nil
+	sql := `SELECT * FROM books WHERE id = $1`
+
+	prepare, err := (*b.db).Prepare(sql)
+	if err != nil {
+		fmt.Println(err)
+
+		return nil, err
+	}
+
+	entity := &entities.BookEntity{}
+	err = prepare.QueryRow(id).Scan(
+		&entity.ID,
+		&entity.Title,
+		&entity.Author,
+		&entity.PublishingCompany,
+		&entity.Edition,
+		&entity.CreatedAt,
+		&entity.UpdatedAt,
+		&entity.DeletedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
 }
 
 // FindAll ...
 func (b *booksRepository) FindAll() (*[]entities.BookEntity, error) {
-	return nil, nil
+	sql := `SELECT * FROM books`
+
+	entity := entities.BookEntity{}
+	entitySlice := []entities.BookEntity{}
+
+	rows, err := (*b.db).Query(sql)
+
+	for rows.Next() {
+		err = rows.Scan(
+			&entity.ID,
+			&entity.Title,
+			&entity.Author,
+			&entity.PublishingCompany,
+			&entity.Edition,
+			&entity.CreatedAt,
+			&entity.UpdatedAt,
+			&entity.DeletedAt,
+		)
+		entitySlice = append(entitySlice, entity)
+
+		if err != nil {
+			break
+		}
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &entitySlice, nil
 }
 
 // Update ...

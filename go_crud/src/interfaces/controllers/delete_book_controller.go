@@ -15,8 +15,8 @@ type deleteBookController struct {
 }
 
 // Handle ...
-func (c *deleteBookController) Handle(body interface{}) *core.HTTPResponse {
-	castBody := body.(*entities.InputCreateBook)
+func (c *deleteBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+	castBody := httpRequest.Body.(*entities.InputCreateBook)
 
 	fmt.Println(castBody)
 

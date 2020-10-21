@@ -14,8 +14,8 @@ type createBookController struct {
 }
 
 // Handle ...
-func (c *createBookController) Handle(body interface{}) *core.HTTPResponse {
-	castBody := body.(*entities.InputCreateBook)
+func (c *createBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+	castBody := httpRequest.Body.(*entities.InputCreateBook)
 
 	_, err := c.usecase.RegisterABook(castBody)
 

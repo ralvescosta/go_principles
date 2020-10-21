@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
+	"strconv"
 
 	core "crud/src/__core__"
 	applications "crud/src/applications/books"
-	entities "crud/src/business/entities"
 )
 
 // Controller ...
@@ -15,13 +14,24 @@ type indexBookController struct {
 }
 
 // Handle ...
-func (c *indexBookController) Handle(body interface{}) *core.HTTPResponse {
-	castBody := body.(*entities.InputCreateBook)
+func (c *indexBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+	id, err := strconv.ParseUint(httpRequest.Params["id"], 10, 64)
+	if err != nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusInternalServerError,
+		}
+	}
 
-	fmt.Println(castBody)
+	result, err := c.usecase.FindABook(id)
+	if err != nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusInternalServerError,
+		}
+	}
 
 	return &core.HTTPResponse{
-		StatusCode: http.StatusCreated,
+		StatusCode: http.StatusOK,
+		Body:       result,
 	}
 }
 

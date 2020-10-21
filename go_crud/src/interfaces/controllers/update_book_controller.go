@@ -15,8 +15,8 @@ type updateBookController struct {
 }
 
 // Handle ...
-func (c *updateBookController) Handle(body interface{}) *core.HTTPResponse {
-	castBody := body.(*entities.InputCreateBook)
+func (c *updateBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+	castBody := httpRequest.Body.(*entities.InputCreateBook)
 
 	fmt.Println(castBody)
 

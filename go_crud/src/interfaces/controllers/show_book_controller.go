@@ -1,12 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	core "crud/src/__core__"
 	applications "crud/src/applications/books"
-	entities "crud/src/business/entities"
 )
 
 // Controller ...
@@ -15,13 +13,17 @@ type showBookController struct {
 }
 
 // Handle ...
-func (c *showBookController) Handle(body interface{}) *core.HTTPResponse {
-	castBody := body.(*entities.InputCreateBook)
-
-	fmt.Println(castBody)
+func (c *showBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPResponse {
+	result, err := c.usecase.GetAllBooks()
+	if err != nil {
+		return &core.HTTPResponse{
+			StatusCode: http.StatusInternalServerError,
+		}
+	}
 
 	return &core.HTTPResponse{
-		StatusCode: http.StatusCreated,
+		StatusCode: http.StatusOK,
+		Body:       result,
 	}
 }
 
