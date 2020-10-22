@@ -5,24 +5,30 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
+
 	entities "crud/src/business/entities"
 )
 
-type MockDB struct {
+func Prepare(query string) (*sql.Stmt, error) {
+	return &sql.Stmt{}, nil
 }
 
-
-
-func (mdb *MockDB) Prepare(query string) (*sql.Stmt, error) {
-	return nil, nil
-}
-func (mdb *MockDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	return nil, nil
+func Query(query string, args ...interface{}) (*sql.Rows, error) {
+	return &sql.Rows{}, nil
 }
 
 func TestBooksRepository(t *testing.T) {
+	db, mock, _ := sqlmock.New()
 
-	sut := BooksRepository(&MockDB{})
+	dbConn := &DatabaseStruct{
+		Prepare: db.Prepare,
+		Query:   db.Query,
+	}
+
+	mock.ExpectPrepare("INSERT INTO books (title, author, publishing_company, edition) VALUES ($1, $2, $3, $4) RETURNING *").ExpectQuery()
+
+	sut := BooksRepository(dbConn)
 
 	result, err := sut.Create(&entities.InputCreateBook{Author: "Author", Edition: 1, PublishingCompany: "PublishingCompany", Title: "Title"})
 

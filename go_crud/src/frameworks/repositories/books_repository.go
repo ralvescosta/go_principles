@@ -6,31 +6,14 @@ import (
 	"fmt"
 )
 
-// IQueryRow ...
-type IQueryRow interface {
-	QueryRow(args ...interface{}) IScan
-}
-
-// IScan ...
-type IScan interface {
-	Scan(args ...interface{}) error
-}
-
-// IRow ...
-type IRow interface {
-	Next() bool
-	Scan(args ...interface{}) error
-}
-
-// ISqlDb ...
-type ISqlDb interface {
-	Prepare(query string) (IQueryRow, error)
-	Query(query string, args ...interface{}) (IRow, error)
+// DatabaseStruct ...
+type DatabaseStruct struct {
+	Prepare func(query string) (*sql.Stmt, error)
+	Query   func(query string, args ...interface{}) (*sql.Rows, error)
 }
 
 type booksRepository struct {
-	db *sql.DB
-	ISqlDb
+	db *DatabaseStruct
 }
 
 // Create ...
@@ -204,6 +187,6 @@ func (b *booksRepository) SoftDelete(id uint64) (*entities.BookEntity, error) {
 }
 
 // BooksRepository ...
-func BooksRepository(db ISqlDb) IBooksRepository {
+func BooksRepository(db *DatabaseStruct) IBooksRepository {
 	return &booksRepository{db: db}
 }
