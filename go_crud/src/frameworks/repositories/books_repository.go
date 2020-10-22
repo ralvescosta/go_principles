@@ -6,16 +6,40 @@ import (
 	"fmt"
 )
 
+// IQueryRow ...
+type IQueryRow interface {
+	QueryRow(args ...interface{}) IScan
+}
+
+// IScan ...
+type IScan interface {
+	Scan(args ...interface{}) error
+}
+
+// IRow ...
+type IRow interface {
+	Next() bool
+	Scan(args ...interface{}) error
+}
+
+// ISqlDb ...
+type ISqlDb interface {
+	Prepare(query string) (IQueryRow, error)
+	Query(query string, args ...interface{}) (IRow, error)
+}
+
 type booksRepository struct {
 	db *sql.DB
+	ISqlDb
 }
 
 // Create ...
 func (b *booksRepository) Create(book *entities.InputCreateBook) (*entities.BookEntity, error) {
 	sql := `INSERT INTO books (title, author, publishing_company, edition) VALUES ($1, $2, $3, $4) RETURNING *`
 
-	prepare, err := (*b.db).Prepare(sql)
+	prepare, err := b.db.Prepare(sql)
 	if err != nil {
+		fmt.Println("preparer error")
 		return nil, err
 	}
 
@@ -46,7 +70,7 @@ func (b *booksRepository) Create(book *entities.InputCreateBook) (*entities.Book
 func (b *booksRepository) FindByID(id uint64) (*entities.BookEntity, error) {
 	sql := `SELECT * FROM books WHERE id = $1`
 
-	prepare, err := (*b.db).Prepare(sql)
+	prepare, err := b.db.Prepare(sql)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +100,7 @@ func (b *booksRepository) FindAll() (*[]entities.BookEntity, error) {
 	entity := entities.BookEntity{}
 	entitySlice := []entities.BookEntity{}
 
-	rows, err := (*b.db).Query(sql)
+	rows, err := b.db.Query(sql)
 
 	for rows.Next() {
 		err = rows.Scan(
@@ -123,7 +147,7 @@ func (b *booksRepository) Update(id uint64, book *entities.InputCreateBook) (*en
 	set = set[:len(set)-2]
 	sql := "UPDATE books SET " + set + " WHERE id = $1 RETURNING *"
 
-	prepare, err := (*b.db).Prepare(sql)
+	prepare, err := b.db.Prepare(sql)
 	if err != nil {
 		fmt.Println(sql, err)
 		return nil, err
@@ -150,7 +174,7 @@ func (b *booksRepository) Update(id uint64, book *entities.InputCreateBook) (*en
 func (b *booksRepository) Delete(id uint64) (*entities.BookEntity, error) {
 	sql := `DELETE FROM books WHERE id = $1 RETURNING *`
 
-	prepare, err := (*b.db).Prepare(sql)
+	prepare, err := b.db.Prepare(sql)
 	if err != nil {
 		return nil, err
 	}
@@ -180,6 +204,6 @@ func (b *booksRepository) SoftDelete(id uint64) (*entities.BookEntity, error) {
 }
 
 // BooksRepository ...
-func BooksRepository(db *sql.DB) IBooksRepository {
+func BooksRepository(db ISqlDb) IBooksRepository {
 	return &booksRepository{db: db}
 }
