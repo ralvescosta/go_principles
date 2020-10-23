@@ -21,7 +21,7 @@ func (*middleware) Handle(input *core.HTTPMiddleware) {
 	input.Res.Header().Add("X-WebKit-CSP", "default-src 'none'")
 	input.Res.Header().Add("X-Permitted-Cross-Domain-Policies", "none")
 	input.Res.Header().Add("Referrer-Policy", "origin-when-cross-origin,strict-origin-when-cross-origin")
-	input.Res.Header().Add("Access-Control-Allow-Origin	", "*")
+	input.Res.Header().Add("Access-Control-Allow-Origin", "*")
 	input.Res.Header().Add("Vary", "Accept-Encoding")
 
 	input.Next.ServeHTTP(input.Res, input.Req)

@@ -61,5 +61,8 @@ func TestCorsMiddleware(t *testing.T) {
 
 	result := mocks.res.Result()
 
-	assert.Equal(t, mocks.headers, result.Header)
+	var headers map[string][]string
+	headers = result.Header
+
+	assert.Equal(t, mocks.headers, headers)
 }
