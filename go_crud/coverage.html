@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>repositories: Go Coverage Report</title>
+		<title>books: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,17 +55,19 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">crud/src/frameworks/repositories/books_repository.go (80.3%)</option>
+				<option value="file0">crud/src/applications/books/books.go (72.0%)</option>
 				
-				<option value="file1">crud/src/interfaces/controllers/create_book_controller.go (100.0%)</option>
+				<option value="file1">crud/src/frameworks/repositories/books_repository.go (80.3%)</option>
 				
-				<option value="file2">crud/src/interfaces/controllers/delete_book_controller.go (100.0%)</option>
+				<option value="file2">crud/src/interfaces/controllers/create_book_controller.go (100.0%)</option>
 				
-				<option value="file3">crud/src/interfaces/controllers/index_book_controller.go (90.0%)</option>
+				<option value="file3">crud/src/interfaces/controllers/delete_book_controller.go (100.0%)</option>
 				
-				<option value="file4">crud/src/interfaces/controllers/show_book_controller.go (85.7%)</option>
+				<option value="file4">crud/src/interfaces/controllers/index_book_controller.go (90.0%)</option>
 				
-				<option value="file5">crud/src/interfaces/controllers/update_book_controller.go (100.0%)</option>
+				<option value="file5">crud/src/interfaces/controllers/show_book_controller.go (85.7%)</option>
+				
+				<option value="file6">crud/src/interfaces/controllers/update_book_controller.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -79,7 +81,83 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package repositories
+		<pre class="file" id="file0" style="display: none">package books
+
+import (
+        errors "crud/src/__core__/errors"
+        entities "crud/src/business/entities"
+        repositories "crud/src/frameworks/repositories"
+)
+
+type usecase struct {
+        repository repositories.IBooksRepository
+}
+
+func (u *usecase) RegisterABook(book *entities.InputCreateBook) (*entities.BookEntity, error) <span class="cov8" title="1">{
+
+        result, err := u.repository.Create(book)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, &amp;errors.InternalServerError{}
+        }</span>
+
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (u *usecase) FindABook(id uint64) (*entities.BookEntity, error) <span class="cov8" title="1">{
+
+        result, err := u.repository.FindByID(id)
+
+        if err != nil &amp;&amp; err.Error() == "sql: no rows in result set" </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span>
+        <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
+                return nil, &amp;errors.InternalServerError{}
+        }</span>
+
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (u *usecase) GetAllBooks() (*[]entities.BookEntity, error) <span class="cov8" title="1">{
+
+        result, err := u.repository.FindAll()
+
+        if err != nil &amp;&amp; err.Error() == "sql: no rows in result set" </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span>
+        <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
+                return nil, &amp;errors.InternalServerError{}
+        }</span>
+
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (u *usecase) UpdateABook(id uint64, book *entities.InputCreateBook) (*entities.BookEntity, error) <span class="cov8" title="1">{
+
+        result, err := u.repository.Update(id, book)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, &amp;errors.InternalServerError{}
+        }</span>
+
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (u *usecase) DeleteABook(id uint64) (*entities.BookEntity, error) <span class="cov8" title="1">{
+
+        result, err := u.repository.Delete(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, &amp;errors.InternalServerError{}
+        }</span>
+
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+// Books ...
+func Books(repository repositories.IBooksRepository) IBooks <span class="cov8" title="1">{
+        return &amp;usecase{repository: repository}
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package repositories
 
 import (
         entities "crud/src/business/entities"
@@ -266,7 +344,7 @@ func BooksRepository(db *sql.DB) IBooksRepository <span class="cov8" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package controllers
+		<pre class="file" id="file2" style="display: none">package controllers
 
 import (
         "net/http"
@@ -304,7 +382,7 @@ func CreateABookController(usecase applications.IBooks) core.IController <span c
 }</span>
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package controllers
+		<pre class="file" id="file3" style="display: none">package controllers
 
 import (
         "net/http"
@@ -346,7 +424,7 @@ func DeleteABookController(usecase applications.IBooks) core.IController <span c
 }</span>
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package controllers
+		<pre class="file" id="file4" style="display: none">package controllers
 
 import (
         core "crud/src/__core__"
@@ -395,7 +473,7 @@ func IndexBookController(usecase applications.IBooks) core.IController <span cla
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package controllers
+		<pre class="file" id="file5" style="display: none">package controllers
 
 import (
         "net/http"
@@ -437,7 +515,7 @@ func ShowBookController(usecase applications.IBooks) core.IController <span clas
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package controllers
+		<pre class="file" id="file6" style="display: none">package controllers
 
 import (
         "net/http"

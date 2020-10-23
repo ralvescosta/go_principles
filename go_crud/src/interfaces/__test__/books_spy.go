@@ -50,8 +50,3 @@ func (u *BookSpy) DeleteABook(id uint64) (*entities.BookEntity, error) {
 
 	return args.Get(0).(*entities.BookEntity), args.Error(1)
 }
-
-// BooksSpy ...
-func BooksSpy() *BookSpy {
-	return &BookSpy{}
-}

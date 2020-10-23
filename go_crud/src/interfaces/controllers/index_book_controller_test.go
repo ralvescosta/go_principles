@@ -38,7 +38,7 @@ func makeIndexMocks() *mocksIndexStruct {
 		Params: param,
 	}
 
-	usecaseSpy := stuntman.BooksSpy()
+	usecaseSpy := &stuntman.BookSpy{}
 
 	return &mocksIndexStruct{
 		bookEntity: bookEntity,

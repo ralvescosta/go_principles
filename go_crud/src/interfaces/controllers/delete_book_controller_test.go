@@ -47,7 +47,7 @@ func makeDeleteMocks() *mocksDeleteStruct {
 		Params: param,
 	}
 
-	usecaseSpy := stuntman.BooksSpy()
+	usecaseSpy := &stuntman.BookSpy{}
 
 	return &mocksDeleteStruct{
 		inputCreateBook: inputCreateBook,

@@ -21,7 +21,7 @@ type mocksShowStruct struct {
 
 func makeShowMocks() *mocksShowStruct {
 
-	bookEntity := &[]entities.BookEntity{
+	booksEntity := &[]entities.BookEntity{
 		entities.BookEntity{
 			ID:                1,
 			Title:             "title",
@@ -36,10 +36,10 @@ func makeShowMocks() *mocksShowStruct {
 
 	request := &core.HTTPRequest{}
 
-	usecaseSpy := stuntman.BooksSpy()
+	usecaseSpy := &stuntman.BookSpy{}
 
 	return &mocksShowStruct{
-		booksEntity: bookEntity,
+		booksEntity: booksEntity,
 		request:     request,
 		usecaseSpy:  usecaseSpy,
 	}

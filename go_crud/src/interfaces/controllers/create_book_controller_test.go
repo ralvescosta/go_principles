@@ -45,7 +45,7 @@ func makeCreateMocks() *mocksCreateStruct {
 		Body: inputCreateBook,
 	}
 
-	usecaseSpy := stuntman.BooksSpy()
+	usecaseSpy := &stuntman.BookSpy{}
 
 	return &mocksCreateStruct{
 		inputCreateBook: inputCreateBook,
