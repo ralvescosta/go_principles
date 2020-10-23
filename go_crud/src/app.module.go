@@ -46,9 +46,11 @@ func (s *Server) StartHTPServer() {
 	/*
 	* Mux Router Handler
 	 */
-	_hMiddleware := middleware.HeadersMiddleware()
 	router := mux.NewRouter()
-	router.Use(_hMiddleware.Handle)
+
+	_cors := middleware.Cors()
+	router.Use(adapters.MiddlewareAdapt(_cors))
+
 	s.router = router
 
 	/*

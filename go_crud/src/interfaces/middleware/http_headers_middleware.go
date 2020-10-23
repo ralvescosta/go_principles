@@ -1,36 +1,33 @@
 package interfaces
 
 import (
-	"net/http"
-
 	core "crud/src/__core__"
 )
 
 type middleware struct{}
 
 // Handle ...
-func (*middleware) Handle(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(req http.ResponseWriter, res *http.Request) {
-		req.Header().Add("Content-Type", "application/json; charset=utf-8")
-		req.Header().Add("X-DNS-Prefetch-Control", "off")
-		req.Header().Add("X-Frame-Options", "SAMEORIGIN")
-		req.Header().Add("Strict-Transport-Security", "max-age=15552000; includeSubDomains")
-		req.Header().Add("X-Download-Options", "noopen")
-		req.Header().Add("X-Content-Type-Options", "nosniff")
-		req.Header().Add("X-XSS-Protection", "1; mode=block")
-		req.Header().Add("Content-Security-Policy", "default-src 'none'")
-		req.Header().Add("X-Content-Security-Policy", "default-src 'none'")
-		req.Header().Add("X-WebKit-CSP", "default-src 'none'")
-		req.Header().Add("X-Permitted-Cross-Domain-Policies", "none")
-		req.Header().Add("Referrer-Policy", "origin-when-cross-origin,strict-origin-when-cross-origin")
-		req.Header().Add("Access-Control-Allow-Origin	", "*")
-		req.Header().Add("Vary", "Accept-Encoding")
+func (*middleware) Handle(input *core.HTTPMiddleware) {
 
-		next.ServeHTTP(req, res)
-	})
+	input.Req.Header().Add("Content-Type", "application/json; charset=utf-8")
+	input.Req.Header().Add("X-DNS-Prefetch-Control", "off")
+	input.Req.Header().Add("X-Frame-Options", "SAMEORIGIN")
+	input.Req.Header().Add("Strict-Transport-Security", "max-age=15552000; includeSubDomains")
+	input.Req.Header().Add("X-Download-Options", "noopen")
+	input.Req.Header().Add("X-Content-Type-Options", "nosniff")
+	input.Req.Header().Add("X-XSS-Protection", "1; mode=block")
+	input.Req.Header().Add("Content-Security-Policy", "default-src 'none'")
+	input.Req.Header().Add("X-Content-Security-Policy", "default-src 'none'")
+	input.Req.Header().Add("X-WebKit-CSP", "default-src 'none'")
+	input.Req.Header().Add("X-Permitted-Cross-Domain-Policies", "none")
+	input.Req.Header().Add("Referrer-Policy", "origin-when-cross-origin,strict-origin-when-cross-origin")
+	input.Req.Header().Add("Access-Control-Allow-Origin	", "*")
+	input.Req.Header().Add("Vary", "Accept-Encoding")
+
+	input.Next.ServeHTTP(input.Req, input.Res)
 }
 
-// HeadersMiddleware ...
-func HeadersMiddleware() core.IMiddleware {
+// Cors ...
+func Cors() core.IMiddleware {
 	return &middleware{}
 }
