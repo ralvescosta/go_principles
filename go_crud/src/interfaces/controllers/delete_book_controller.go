@@ -30,7 +30,7 @@ func (c *deleteBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPR
 	}
 
 	return &core.HTTPResponse{
-		StatusCode: http.StatusCreated,
+		StatusCode: http.StatusOK,
 	}
 }
 

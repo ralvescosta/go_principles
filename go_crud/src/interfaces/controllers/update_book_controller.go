@@ -32,7 +32,7 @@ func (c *updateBookController) Handle(httpRequest *core.HTTPRequest) *core.HTTPR
 	}
 
 	return &core.HTTPResponse{
-		StatusCode: http.StatusCreated,
+		StatusCode: http.StatusOK,
 		Body:       result,
 	}
 }
