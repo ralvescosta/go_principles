@@ -2,6 +2,7 @@ package main
 
 import (
 	"crud/src/frameworks/database"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -25,7 +26,7 @@ const (
 
 // Server ...
 type Server struct {
-	dbConn *repositories.DatabaseStruct
+	dbConn *sql.DB
 	router *mux.Router
 }
 
@@ -40,10 +41,7 @@ func (s *Server) StartHTPServer() {
 		panic(err)
 	}
 	defer dbConn.Close()
-	s.dbConn = &repositories.DatabaseStruct{
-		Prepare: dbConn.Prepare,
-		Query:   dbConn.Query,
-	}
+	s.dbConn = dbConn
 
 	/*
 	* Mux Router Handler
