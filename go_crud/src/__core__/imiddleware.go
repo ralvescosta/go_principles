@@ -4,8 +4,8 @@ import "net/http"
 
 // HTTPMiddleware ...
 type HTTPMiddleware struct {
-	Req  http.ResponseWriter
-	Res  *http.Request
+	Req  *http.Request
+	Res  http.ResponseWriter
 	Next http.Handler
 }
 

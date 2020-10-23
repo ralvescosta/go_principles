@@ -57,17 +57,21 @@
 				
 				<option value="file0">crud/src/applications/books/books.go (72.0%)</option>
 				
-				<option value="file1">crud/src/frameworks/repositories/books_repository.go (80.3%)</option>
+				<option value="file1">crud/src/frameworks/adapters/mux_middleware_adapt.go (66.7%)</option>
 				
-				<option value="file2">crud/src/interfaces/controllers/create_book_controller.go (100.0%)</option>
+				<option value="file2">crud/src/frameworks/adapters/mux_router_adapt.go (63.6%)</option>
 				
-				<option value="file3">crud/src/interfaces/controllers/delete_book_controller.go (100.0%)</option>
+				<option value="file3">crud/src/frameworks/repositories/books_repository.go (80.3%)</option>
 				
-				<option value="file4">crud/src/interfaces/controllers/index_book_controller.go (90.0%)</option>
+				<option value="file4">crud/src/interfaces/controllers/create_book_controller.go (100.0%)</option>
 				
-				<option value="file5">crud/src/interfaces/controllers/show_book_controller.go (85.7%)</option>
+				<option value="file5">crud/src/interfaces/controllers/delete_book_controller.go (100.0%)</option>
 				
-				<option value="file6">crud/src/interfaces/controllers/update_book_controller.go (100.0%)</option>
+				<option value="file6">crud/src/interfaces/controllers/index_book_controller.go (90.0%)</option>
+				
+				<option value="file7">crud/src/interfaces/controllers/show_book_controller.go (85.7%)</option>
+				
+				<option value="file8">crud/src/interfaces/controllers/update_book_controller.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -157,7 +161,71 @@ func Books(repository repositories.IBooksRepository) IBooks <span class="cov8" t
 }</span>
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package repositories
+		<pre class="file" id="file1" style="display: none">package adapters
+
+import (
+        core "crud/src/__core__"
+
+        "net/http"
+)
+
+// MiddlewareAdapt ...
+func MiddlewareAdapt(middleware core.IMiddleware) func(next http.Handler) http.Handler <span class="cov8" title="1">{
+        return func(next http.Handler) http.Handler </span><span class="cov8" title="1">{
+
+                return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) </span><span class="cov0" title="0">{
+
+                        middleware.Handle(&amp;core.HTTPMiddleware{
+                                Req:  req,
+                                Res:  res,
+                                Next: next,
+                        })
+
+                }</span>)
+        }
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package adapters
+
+import (
+        core "crud/src/__core__"
+
+        "encoding/json"
+        "net/http"
+
+        "github.com/gorilla/mux"
+)
+
+// RouteAdapt ...
+func RouteAdapt(controller core.IController, body interface{}) func(res http.ResponseWriter, req *http.Request) <span class="cov8" title="1">{
+        return func(res http.ResponseWriter, req *http.Request) </span><span class="cov8" title="1">{
+
+                if body != nil </span><span class="cov0" title="0">{
+                        err := json.NewDecoder(req.Body).Decode(body)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return
+                        }</span>
+                }
+
+                <span class="cov8" title="1">vars := mux.Vars(req)
+
+                httpRequest := &amp;core.HTTPRequest{
+                        Body:   body,
+                        Params: vars,
+                }
+
+                result := controller.Handle(httpRequest)
+
+                res.WriteHeader(result.StatusCode)
+                if result.Body != nil </span><span class="cov0" title="0">{
+                        json.NewEncoder(res).Encode(result.Body)
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package repositories
 
 import (
         entities "crud/src/business/entities"
@@ -344,7 +412,7 @@ func BooksRepository(db *sql.DB) IBooksRepository <span class="cov8" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package controllers
+		<pre class="file" id="file4" style="display: none">package controllers
 
 import (
         "net/http"
@@ -382,7 +450,7 @@ func CreateABookController(usecase applications.IBooks) core.IController <span c
 }</span>
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package controllers
+		<pre class="file" id="file5" style="display: none">package controllers
 
 import (
         "net/http"
@@ -424,7 +492,7 @@ func DeleteABookController(usecase applications.IBooks) core.IController <span c
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package controllers
+		<pre class="file" id="file6" style="display: none">package controllers
 
 import (
         core "crud/src/__core__"
@@ -473,7 +541,7 @@ func IndexBookController(usecase applications.IBooks) core.IController <span cla
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package controllers
+		<pre class="file" id="file7" style="display: none">package controllers
 
 import (
         "net/http"
@@ -515,7 +583,7 @@ func ShowBookController(usecase applications.IBooks) core.IController <span clas
 }</span>
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package controllers
+		<pre class="file" id="file8" style="display: none">package controllers
 
 import (
         "net/http"
