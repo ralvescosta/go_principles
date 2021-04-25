@@ -12,7 +12,8 @@
       "mode": "auto",
       "port": 2345,
       "host": "127.0.0.1",
-      "program": "${workspaceFolder}/src"
+      "program": "${workspaceFolder}/src",
+      "args": ["run", "main.go"]
     }
   ]
 }
