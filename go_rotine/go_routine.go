@@ -26,7 +26,7 @@ func GoRoutine() {
 func func1() {
 	for i := 0; i < 100; i++ {
 		fmt.Println("Func 1: ", i)
-		time.Sleep(50)
+		time.Sleep(5000)
 	}
 	wg.Done()
 }
@@ -34,7 +34,7 @@ func func1() {
 func func2() {
 	for i := 0; i < 100; i++ {
 		fmt.Println("Func 2: ", i)
-		time.Sleep(30)
+		time.Sleep(3000)
 	}
 	wg.Done()
 }
